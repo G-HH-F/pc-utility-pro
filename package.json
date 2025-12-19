@@ -70,10 +70,7 @@
       ],
       "icon": "assets/icon.ico",
       "legalTrademarks": "PC Utility Pro™",
-      "requestedExecutionLevel": "asInvoker",
-      "signingHashAlgorithms": ["sha256"],
-      "sign": "./build/sign.js",
-      "signDlls": false
+      "requestedExecutionLevel": "asInvoker"
     },
     "nsis": {
       "oneClick": false,

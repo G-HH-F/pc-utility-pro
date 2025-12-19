@@ -31,7 +31,10 @@
       "Bash(start \"\" \"C:\\\\Users\\\\g\\\\Desktop\\\\pc-utility-pro\\\\dist\\\\PC Utility Pro-2.4.0-Portable.exe\")",
       "Bash(npm test)",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nv2.4.0: Security hardening and automated testing\n\nSecurity Fixes:\n- Command injection prevention in quick-fix handler \\(PID validation\\)\n- Path traversal protection for file operations\n- XSS prevention with page navigation allowlist\n- URL validation in open-external \\(http/https only\\)\n- UNC path blocking to prevent SSRF attacks\n- Command chaining validation \\(blocks &&, ||, |, ;\\)\n- Session lifetime limits \\(4-hour max\\)\n- Rate limiting for AI chat \\(20 req/min\\)\n\nNew Features:\n- Automated Playwright test suite \\(12 tests\\)\n- Advanced speed test module with jitter, bufferbloat, packet loss\n- Strengthened Content Security Policy\n- Code signing configuration ready\n\nInfrastructure:\n- Git repository initialized\n- Test mode for CI/CD compatibility\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git config:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
