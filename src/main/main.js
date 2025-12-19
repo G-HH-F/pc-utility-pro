@@ -25,6 +25,7 @@ const { getAuditLogger } = require('./services/auditLogger');
 const { getOfflineResponse, checkAPIAvailable } = require('./services/offlineAI');
 const { runFlow: runTroubleshootingFlow, getAvailableFlows, getFlow, executeStep } = require('./services/troubleshootingFlows');
 const { runSpeedTest } = require('./services/speedTest');
+const { generateUniqueId, generateUniqueFilename } = require('./services/uniqueId');
 
 // Handler modules (new modular structure)
 // These handlers are being migrated from main.js for better organization
@@ -261,7 +262,7 @@ const MICRO_BEHAVIORS_FILE = path.join(app.getPath('userData'), 'micro-behaviors
 function createDefaultAnalytics() {
   return {
     version: '1.0',
-    userId: `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    userId: generateUniqueId('user'),
     created: new Date().toISOString(),
     lastUpdated: new Date().toISOString(),
     sessions: [],
@@ -378,7 +379,7 @@ function saveMicroBehaviors(data) {
 function startSession() {
   loadAnalytics();
   currentSession = {
-    id: `session-${Date.now()}`,
+    id: generateUniqueId('session'),
     start: new Date().toISOString(),
     end: null,
     duration: 0,
@@ -2589,7 +2590,7 @@ async function executeTool(toolName, toolInput) {
 
       case 'take_screenshot': {
         const homeDir = require('os').homedir();
-        const filename = toolInput.filename || `screenshot-${Date.now()}`;
+        const filename = toolInput.filename || generateUniqueFilename('screenshot');
         const filepath = path.join(homeDir, 'Pictures', `${filename}.png`);
 
         return new Promise((resolve) => {
@@ -3881,7 +3882,7 @@ ipcMain.handle('take-screenshot', async () => {
       const screenshot = sources[0].thumbnail;
       const screenshotPath = path.join(
         app.getPath('pictures'),
-        `Screenshot-${Date.now()}.png`
+        generateUniqueFilename('Screenshot', 'png')
       );
 
       fs.writeFileSync(screenshotPath, screenshot.toPNG());
@@ -3934,7 +3935,7 @@ ipcMain.handle('screenshot-to-support', async () => {
       const screenshot = sources[0].thumbnail;
       const screenshotPath = path.join(
         app.getPath('temp'),
-        `support-screenshot-${Date.now()}.png`
+        generateUniqueFilename('support-screenshot', 'png')
       );
 
       fs.writeFileSync(screenshotPath, screenshot.toPNG());
@@ -4814,7 +4815,7 @@ Don't be annoying. Only interrupt if you can genuinely help.`;
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       const insight = JSON.parse(jsonMatch[0]);
-      insight.id = `insight-${Date.now()}`;
+      insight.id = generateUniqueId('insight');
       return insight;
     }
 

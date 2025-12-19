@@ -1,6 +1,23 @@
 // PC Utility Pro - Renderer
 
 // ============================================================
+// UNIQUE ID GENERATOR (Browser-compatible)
+// ============================================================
+const uniqueIdState = { counter: 0, lastTimestamp: 0 };
+
+function generateUniqueId(prefix = 'id') {
+  const timestamp = Date.now();
+  if (timestamp !== uniqueIdState.lastTimestamp) {
+    uniqueIdState.counter = 0;
+    uniqueIdState.lastTimestamp = timestamp;
+  } else {
+    uniqueIdState.counter++;
+  }
+  const random = Math.random().toString(36).substring(2, 6);
+  return prefix + '-' + timestamp + '-' + uniqueIdState.counter + '-' + random;
+}
+
+// ============================================================
 // INITIALIZATION
 // ============================================================
 document.addEventListener('DOMContentLoaded', async () => {
@@ -2079,7 +2096,7 @@ function saveNote() {
   if (!text) return;
 
   notes.unshift({
-    id: Date.now(),
+    id: generateUniqueId('note'),
     text: text,
     time: new Date().toLocaleString()
   });
