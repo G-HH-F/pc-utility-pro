@@ -4,8 +4,8 @@
 
 **The all-in-one Windows PC utility with AI-powered assistance**
 
-[![Version](https://img.shields.io/badge/version-2.4.0-blue.svg)](https://github.com/pcutilitypro/pc-utility-pro/releases)
-[![CI](https://github.com/pcutilitypro/pc-utility-pro/actions/workflows/ci.yml/badge.svg)](https://github.com/pcutilitypro/pc-utility-pro/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/badge/version-2.4.0-blue.svg)](https://github.com/G-HH-F/pc-utility-pro/releases)
+[![CI](https://github.com/G-HH-F/pc-utility-pro/actions/workflows/ci.yml/badge.svg)](https://github.com/G-HH-F/pc-utility-pro/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%2010%2B-lightgrey.svg)]()
 [![Tests](https://img.shields.io/badge/tests-12%20passing-brightgreen.svg)]()
