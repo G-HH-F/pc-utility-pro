@@ -1,0 +1,65 @@
+====================================
+PC UTILITY PRO - INSTALLATION GUIDE
+====================================
+
+STEP 1: INSTALL NODE.JS
+-----------------------
+1. Open a web browser and go to: https://nodejs.org
+2. Download the LTS version (the big green button on the left)
+3. Run the installer
+4. Click "Next" through all the steps, accept the defaults
+5. Click "Install" and wait for it to finish
+6. Click "Finish"
+
+
+STEP 2: COPY THE APP
+--------------------
+1. Copy this entire folder from the USB to your Desktop
+   (or wherever you want to keep it)
+
+
+STEP 3: INSTALL DEPENDENCIES
+----------------------------
+1. Press Windows key + R
+2. Type: cmd
+3. Press Enter
+4. Type these commands (press Enter after each):
+
+   cd Desktop\pc-utility-pro
+   npm install
+
+5. Wait 2-3 minutes for it to download everything
+
+
+STEP 4: RUN THE APP
+-------------------
+In the same command prompt window, type:
+
+   npm start
+
+The app should open!
+
+
+OPTIONAL: CREATE DESKTOP SHORTCUT
+---------------------------------
+1. Find the file "create-shortcut.ps1" in the app folder
+2. Right-click it
+3. Select "Run with PowerShell"
+4. A shortcut called "PC Utility Pro" will appear on your desktop
+
+
+TROUBLESHOOTING
+---------------
+If "npm" is not recognized:
+- Close the command prompt
+- Restart your computer
+- Try again
+
+If the app won't start:
+- Make sure you ran "npm install" first
+- Check that config.json exists in the folder
+
+Need help? Use the "Contact Support" button in the app!
+
+
+====================================

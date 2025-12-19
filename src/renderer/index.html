@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://speed.cloudflare.com https://*.ovh.net https://api.anthropic.com; font-src 'self' data:">
+  <title>PC Utility Pro</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Background effects -->
+    <div class="sparkles" id="sparkles"></div>
+
+    <!-- Title Bar -->
+    <div class="titlebar">
+      <div class="titlebar-drag">
+        <span class="app-name">PC Utility Pro</span>
+      </div>
+      <div class="window-controls">
+        <button class="win-btn" id="btn-min">─</button>
+        <button class="win-btn" id="btn-max">□</button>
+        <button class="win-btn close" id="btn-close">×</button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+      <!-- Sidebar -->
+      <nav class="sidebar">
+        <button class="nav-item active" data-page="home">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">Home</span>
+        </button>
+        <button class="nav-item" data-page="chat">
+          <span class="nav-icon">🤖</span>
+          <span class="nav-label">AI Help</span>
+        </button>
+        <button class="nav-item" data-page="specs">
+          <span class="nav-icon">💻</span>
+          <span class="nav-label">My PC</span>
+        </button>
+        <button class="nav-item" data-page="storage">
+          <span class="nav-icon">🧹</span>
+          <span class="nav-label">Cleanup</span>
+        </button>
+        <button class="nav-item" data-page="launcher">
+          <span class="nav-icon">🚀</span>
+          <span class="nav-label">Launch</span>
+        </button>
+        <button class="nav-item" data-page="notes">
+          <span class="nav-icon">📝</span>
+          <span class="nav-label">Notes</span>
+        </button>
+        <div class="nav-spacer"></div>
+        <button class="nav-item" data-page="settings">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">Settings</span>
+        </button>
+        <button class="nav-item help-btn" data-page="help">
+          <span class="nav-icon">🆘</span>
+          <span class="nav-label">Help Me</span>
+        </button>
+      </nav>
+
+      <!-- Pages -->
+      <div class="content">
+        <!-- AI Insight Indicator (Fixed position, appears on all pages) -->
+        <div class="ai-insight-indicator" id="ai-insight-indicator">
+          <div class="ai-indicator-dot" onclick="aiInsightManager.expandInsight()"></div>
+          <div class="ai-insight-preview">
+            <div class="ai-insight-content">
+              <span class="ai-insight-icon">✨</span>
+              <div class="ai-insight-text">
+                <span class="ai-insight-title">AI Insight</span>
+                <span class="ai-insight-preview-text">Click to see more</span>
+              </div>
+            </div>
+            <div class="ai-insight-expanded" style="display: none;">
+              <p class="ai-message"></p>
+              <div class="ai-suggestion-actions">
+                <button class="ai-action-btn confirm" onclick="aiInsightManager.confirmSuggestion()">Do it</button>
+                <button class="ai-action-btn dismiss" onclick="aiInsightManager.dismissInsight()">Not now</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Home Page -->
+        <div class="page active" id="page-home">
+          <div class="home-container">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+              <div class="welcome-text">
+                <h1 class="greeting" id="greeting">Hello</h1>
+                <h2 class="name" id="username">there</h2>
+              </div>
+              <div class="pc-avatar" id="pc-avatar">
+                <div class="avatar-face">
+                  <div class="avatar-eyes">
+                    <div class="eye left"></div>
+                    <div class="eye right"></div>
+                  </div>
+                  <div class="avatar-mouth happy"></div>
+                </div>
+                <div class="avatar-glow"></div>
+              </div>
+            </div>
+
+            <!-- PC Says -->
+            <div class="pc-says glow-hover" id="pc-says">
+              <p class="mood-message" id="mood-message">Checking how I'm doing...</p>
+            </div>
+
+            <!-- Health Score -->
+            <div class="health-section glow-hover">
+              <div class="health-ring-container">
+                <svg class="health-ring" viewBox="0 0 120 120">
+                  <circle class="health-ring-bg" cx="60" cy="60" r="52" />
+                  <circle class="health-ring-fill" id="health-ring-fill" cx="60" cy="60" r="52" />
+                </svg>
+                <div class="health-score" id="health-score">--</div>
+                <div class="health-label">Health</div>
+              </div>
+              <div class="quick-stats">
+                <div class="stat">
+                  <span class="stat-value" id="stat-cpu">--%</span>
+                  <span class="stat-label">CPU</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-value" id="stat-memory">--%</span>
+                  <span class="stat-label">Memory</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-value" id="stat-uptime">--</span>
+                  <span class="stat-label">Uptime</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Session Recap -->
+            <div class="recap-section" id="recap-section" style="display: none;">
+              <div class="recap-header">
+                <span class="recap-icon">🕐</span>
+                <span class="recap-title">Since you've been away</span>
+                <span class="recap-time" id="recap-time"></span>
+              </div>
+              <div class="recap-changes" id="recap-changes"></div>
+            </div>
+
+            <!-- Insights -->
+            <div class="insights-section">
+              <h3>What's happening</h3>
+              <div class="insights-list" id="insights-list">
+                <div class="insight-card loading">
+                  <span class="insight-icon">⏳</span>
+                  <div class="insight-text">
+                    <span class="insight-title">Checking your PC...</span>
+                    <span class="insight-detail">One moment please</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Home Quick Widgets -->
+            <div class="home-widgets">
+              <!-- Storage Widget -->
+              <div class="home-widget glow-hover" id="home-storage-widget">
+                <div class="widget-header">
+                  <span class="widget-icon">💾</span>
+                  <span class="widget-title">Storage</span>
+                </div>
+                <div class="widget-content">
+                  <div class="storage-mini">
+                    <div class="storage-bar-mini">
+                      <div class="storage-fill-mini" id="home-storage-fill" style="width: 0%"></div>
+                    </div>
+                    <span class="storage-text-mini" id="home-storage-text">Checking...</span>
+                  </div>
+                </div>
+                <button class="widget-action-btn" id="home-cleanup-btn">Quick Cleanup</button>
+              </div>
+
+              <!-- Network Widget -->
+              <div class="home-widget glow-hover" id="home-network-widget">
+                <div class="widget-header">
+                  <span class="widget-icon" id="home-network-icon">📶</span>
+                  <span class="widget-title">Network</span>
+                </div>
+                <div class="widget-content">
+                  <span class="network-status-mini" id="home-network-status">Checking...</span>
+                  <span class="network-speed-mini" id="home-network-speed"></span>
+                </div>
+                <button class="widget-action-btn" id="home-speedtest-btn">Speed Test</button>
+              </div>
+
+              <!-- Top Apps Widget -->
+              <div class="home-widget glow-hover" id="home-apps-widget">
+                <div class="widget-header">
+                  <span class="widget-icon">📊</span>
+                  <span class="widget-title">Top Apps</span>
+                </div>
+                <div class="widget-content">
+                  <div class="top-apps-mini" id="home-top-apps">
+                    <span class="loading-mini">Loading...</span>
+                  </div>
+                </div>
+                <button class="widget-action-btn" id="home-apps-btn">See All Apps</button>
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+              <button class="action-btn primary" id="ask-ai-btn">
+                <span>🤖</span> Ask AI for help
+              </button>
+              <button class="action-btn" id="contact-support-btn">
+                <span>📞</span> Contact Support
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Launcher Page -->
+        <div class="page" id="page-launcher">
+          <div class="page-header-new">
+            <div class="page-header-icon">🚀</div>
+            <div class="page-header-text">
+              <h2>Quick Launch</h2>
+              <p>Your favorite apps, one click away</p>
+            </div>
+            <button class="edit-launcher-btn-new" id="edit-launcher-btn">
+              <span>✏️</span> Edit
+            </button>
+          </div>
+
+          <!-- Search/Filter -->
+          <div class="launcher-search">
+            <input type="text" id="launcher-search" placeholder="🔍 Search apps...">
+          </div>
+
+          <!-- Launcher Grid -->
+          <div class="launcher-grid-new" id="launcher-grid">
+            <!-- Apps will be loaded dynamically -->
+            <div class="launcher-empty">
+              <span class="empty-icon">🚀</span>
+              <p>No apps added yet</p>
+              <button class="add-first-app-btn" id="add-first-app">+ Add your first app</button>
+            </div>
+          </div>
+
+          <!-- Add App Modal -->
+          <div class="launcher-modal" id="launcher-modal" style="display: none;">
+            <div class="modal-content-new">
+              <div class="modal-header-new">
+                <h3>Add Apps to Quick Launch</h3>
+                <button class="modal-close-new" id="modal-close">×</button>
+              </div>
+              <div class="modal-search">
+                <input type="text" id="modal-app-search" placeholder="Search installed apps...">
+              </div>
+              <div class="available-apps-new" id="available-apps">
+                <!-- Available apps will be listed here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Page -->
+        <div class="page" id="page-chat">
+          <div class="chat-container">
+            <!-- Chat Header with Max avatar -->
+            <div class="chat-header-new">
+              <div class="chat-assistant-info">
+                <div class="chat-avatar">
+                  <span class="avatar-emoji">🤖</span>
+                  <span class="avatar-status online"></span>
+                </div>
+                <div class="chat-assistant-details">
+                  <h2>Max</h2>
+                  <span class="assistant-status">Your PC Assistant • Online</span>
+                </div>
+              </div>
+              <button class="clear-chat-btn" id="clear-chat-btn" title="Clear conversation">
+                <span>🗑️</span>
+              </button>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chat-messages">
+              <div class="message assistant">
+                <div class="assistant-avatar-small">🤖</div>
+                <div class="message-content">
+                  <p>Hey there! 👋 I'm Max, your PC assistant.</p>
+                  <p>I can actually <strong>do things</strong> for you - not just answer questions. Try asking me to:</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Suggestions -->
+            <div class="chat-suggestions" id="chat-suggestions">
+              <button class="suggestion-chip" data-prompt="Open Chrome">🌐 Open Chrome</button>
+              <button class="suggestion-chip" data-prompt="What's using my CPU right now?">📊 Check CPU usage</button>
+              <button class="suggestion-chip" data-prompt="Clean up my Downloads folder">🧹 Clean Downloads</button>
+              <button class="suggestion-chip" data-prompt="Find large files on my computer">🔍 Find large files</button>
+              <button class="suggestion-chip" data-prompt="Take a screenshot">📸 Screenshot</button>
+              <button class="suggestion-chip" data-prompt="How much free space do I have?">💾 Check storage</button>
+            </div>
+
+            <!-- Input Area -->
+            <div class="chat-input-area-new">
+              <div class="chat-input-wrapper">
+                <input type="text" id="chat-input" placeholder="Ask Max to do something..." />
+                <span class="input-hint">Press Enter to send</span>
+              </div>
+              <button class="send-btn-new" id="send-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PC Specs Page (Now includes Network & Apps) -->
+        <div class="page" id="page-specs">
+          <div class="specs-hero glow-hover">
+            <div class="pc-icon">🖥️</div>
+            <h2>Your Computer</h2>
+            <p id="specs-summary">Loading your PC info...</p>
+          </div>
+
+          <!-- Tab switcher for sub-sections -->
+          <div class="specs-tabs">
+            <button class="specs-tab active" data-tab="hardware">💻 Hardware</button>
+            <button class="specs-tab" data-tab="network">📶 Network</button>
+            <button class="specs-tab" data-tab="apps">📊 Running Apps</button>
+          </div>
+
+          <!-- Hardware Tab -->
+          <div class="specs-tab-content active" id="tab-hardware">
+            <!-- Spec Detail Panel (hidden by default) -->
+            <div class="spec-detail-panel" id="spec-detail-panel" style="display: none;">
+              <div class="spec-detail-header">
+                <span class="spec-detail-icon" id="detail-icon">🧠</span>
+                <h3 id="detail-title">Processor Details</h3>
+                <button class="spec-detail-close" onclick="closeSpecDetail()">✕</button>
+              </div>
+              <div class="spec-detail-content" id="detail-content">
+                <!-- Dynamic content -->
+              </div>
+            </div>
+
+            <div class="specs-grid" id="specs-grid">
+              <div class="spec-card glow-hover clickable" data-spec="cpu" onclick="showSpecDetail('cpu')">
+                <div class="spec-icon">🧠</div>
+                <div class="spec-info">
+                  <h4>Processor</h4>
+                  <span class="value" id="spec-cpu">Loading...</span>
+                  <span class="detail" id="spec-cpu-detail"></span>
+                </div>
+                <span class="spec-arrow">›</span>
+              </div>
+              <div class="spec-card glow-hover clickable" data-spec="ram" onclick="showSpecDetail('ram')">
+                <div class="spec-icon">💾</div>
+                <div class="spec-info">
+                  <h4>Memory (RAM)</h4>
+                  <span class="value" id="spec-ram">Loading...</span>
+                  <span class="detail" id="spec-ram-detail"></span>
+                </div>
+                <span class="spec-arrow">›</span>
+              </div>
+              <div class="spec-card glow-hover clickable" data-spec="gpu" onclick="showSpecDetail('gpu')">
+                <div class="spec-icon">🎮</div>
+                <div class="spec-info">
+                  <h4>Graphics Card</h4>
+                  <span class="value" id="spec-gpu">Loading...</span>
+                  <span class="detail" id="spec-gpu-detail"></span>
+                </div>
+                <span class="spec-arrow">›</span>
+              </div>
+              <div class="spec-card glow-hover clickable" data-spec="storage" onclick="showSpecDetail('storage')">
+                <div class="spec-icon">💿</div>
+                <div class="spec-info">
+                  <h4>Storage</h4>
+                  <span class="value" id="spec-storage">Loading...</span>
+                  <span class="detail" id="spec-storage-detail"></span>
+                </div>
+                <span class="spec-arrow">›</span>
+              </div>
+              <div class="spec-card glow-hover clickable" data-spec="os" onclick="showSpecDetail('os')">
+                <div class="spec-icon">🪟</div>
+                <div class="spec-info">
+                  <h4>Operating System</h4>
+                  <span class="value" id="spec-os">Loading...</span>
+                  <span class="detail" id="spec-os-detail"></span>
+                </div>
+                <span class="spec-arrow">›</span>
+              </div>
+              <div class="spec-card glow-hover">
+                <div class="spec-icon">📺</div>
+                <div class="spec-info">
+                  <h4>Display</h4>
+                  <span class="value" id="spec-display">Loading...</span>
+                  <span class="detail" id="spec-display-detail"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Network Tab -->
+          <div class="specs-tab-content" id="tab-network">
+            <div class="wifi-status-card glow-hover">
+              <span class="wifi-icon" id="wifi-icon">📶</span>
+              <div class="wifi-info">
+                <h3 id="wifi-name">Checking...</h3>
+                <p id="wifi-detail">Looking for your network</p>
+              </div>
+              <span class="wifi-status connected" id="wifi-status">Connected</span>
+            </div>
+
+            <div class="speed-test-card-advanced glow-hover">
+              <div class="speed-test-header">
+                <h3>Network Speed Test</h3>
+                <div class="overall-score" id="speed-overall-score">
+                  <span class="score-value">--</span>
+                  <span class="score-label">Score</span>
+                </div>
+              </div>
+
+              <!-- Progress Bar (shown during test) -->
+              <div class="speed-test-progress" id="speed-test-progress" style="display: none;">
+                <div class="progress-bar-container">
+                  <div class="progress-bar" id="speed-progress-bar"></div>
+                </div>
+                <p class="progress-message" id="speed-progress-message">Initializing...</p>
+              </div>
+
+              <!-- Grade Legend -->
+              <div class="grade-legend" id="grade-legend">
+                <span class="legend-title">Grades:</span>
+                <span class="legend-item grade-excellent">A+ Excellent</span>
+                <span class="legend-item grade-good">A Good</span>
+                <span class="legend-item grade-fair">B Fair</span>
+                <span class="legend-item grade-poor">C/D Poor</span>
+              </div>
+
+              <!-- Main Metrics -->
+              <div class="speed-metrics-grid" id="speed-metrics">
+                <div class="speed-metric primary" data-metric="download">
+                  <div class="metric-icon">⬇️</div>
+                  <div class="metric-data">
+                    <span class="metric-value" id="download-speed">--</span>
+                    <span class="metric-unit">Mbps</span>
+                  </div>
+                  <span class="metric-label">Download</span>
+                  <span class="metric-grade" id="download-grade">--</span>
+                  <div class="metric-tooltip">
+                    <strong>Download Speed</strong>
+                    <p>How fast your internet can receive data. Higher is better.</p>
+                    <p class="tooltip-example">25+ Mbps = 4K streaming, 100+ Mbps = excellent</p>
+                  </div>
+                </div>
+                <div class="speed-metric primary" data-metric="upload">
+                  <div class="metric-icon">⬆️</div>
+                  <div class="metric-data">
+                    <span class="metric-value" id="upload-speed">--</span>
+                    <span class="metric-unit">Mbps</span>
+                  </div>
+                  <span class="metric-label">Upload</span>
+                  <span class="metric-grade" id="upload-grade">--</span>
+                  <div class="metric-tooltip">
+                    <strong>Upload Speed</strong>
+                    <p>How fast you can send data (video calls, uploading files). Higher is better.</p>
+                    <p class="tooltip-example">5+ Mbps = video calls, 25+ Mbps = streaming/content creation</p>
+                  </div>
+                </div>
+                <div class="speed-metric" data-metric="ping">
+                  <div class="metric-icon">📍</div>
+                  <div class="metric-data">
+                    <span class="metric-value" id="ping-speed">--</span>
+                    <span class="metric-unit">ms</span>
+                  </div>
+                  <span class="metric-label">Ping</span>
+                  <span class="metric-grade" id="ping-grade">--</span>
+                  <div class="metric-tooltip">
+                    <strong>Ping (Latency)</strong>
+                    <p>How quickly your PC communicates with servers. Lower is better.</p>
+                    <p class="tooltip-example">Under 20ms = excellent for gaming, under 100ms = normal browsing</p>
+                  </div>
+                </div>
+                <div class="speed-metric" data-metric="jitter">
+                  <div class="metric-icon">📊</div>
+                  <div class="metric-data">
+                    <span class="metric-value" id="jitter-speed">--</span>
+                    <span class="metric-unit">ms</span>
+                  </div>
+                  <span class="metric-label">Jitter</span>
+                  <span class="metric-grade" id="jitter-grade">--</span>
+                  <div class="metric-tooltip">
+                    <strong>Jitter</strong>
+                    <p>How stable your connection is. Lower is better. High jitter causes choppy video calls and laggy games.</p>
+                    <p class="tooltip-example">Under 15ms = stable, over 30ms = may cause issues</p>
+                  </div>
+                </div>
+                <div class="speed-metric" data-metric="bufferbloat">
+                  <div class="metric-icon">🌊</div>
+                  <div class="metric-data">
+                    <span class="metric-value" id="bufferbloat-speed">--</span>
+                    <span class="metric-unit">ms</span>
+                  </div>
+                  <span class="metric-label">Bufferbloat</span>
+                  <span class="metric-grade" id="bufferbloat-grade">--</span>
+                  <div class="metric-tooltip">
+                    <strong>Bufferbloat</strong>
+                    <p>Extra lag when your network is busy (e.g., someone streaming while you game). Lower is better.</p>
+                    <p class="tooltip-example">Under 30ms = great, over 100ms = you'll notice lag during heavy use</p>
+                  </div>
+                </div>
+                <div class="speed-metric" data-metric="packetloss">
+                  <div class="metric-icon">📦</div>
+                  <div class="metric-data">
+                    <span class="metric-value" id="packet-loss">--</span>
+                    <span class="metric-unit">%</span>
+                  </div>
+                  <span class="metric-label">Packet Loss</span>
+                  <span class="metric-grade" id="packetloss-grade">--</span>
+                  <div class="metric-tooltip">
+                    <strong>Packet Loss</strong>
+                    <p>Data that gets lost in transit. Should be 0%. Any packet loss can cause glitches in games/calls.</p>
+                    <p class="tooltip-example">0% = perfect, over 1% = noticeable issues</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Suitability Indicators -->
+              <div class="speed-suitability" id="speed-suitability" style="display: none;">
+                <h4>Connection Suitability</h4>
+                <div class="suitability-grid">
+                  <div class="suitability-item" id="suit-gaming">
+                    <span class="suit-icon">🎮</span>
+                    <span class="suit-label">Gaming</span>
+                    <span class="suit-status">--</span>
+                  </div>
+                  <div class="suitability-item" id="suit-streaming">
+                    <span class="suit-icon">📺</span>
+                    <span class="suit-label">4K Streaming</span>
+                    <span class="suit-status">--</span>
+                  </div>
+                  <div class="suitability-item" id="suit-videocalls">
+                    <span class="suit-icon">📹</span>
+                    <span class="suit-label">Video Calls</span>
+                    <span class="suit-status">--</span>
+                  </div>
+                  <div class="suitability-item" id="suit-wfh">
+                    <span class="suit-icon">💼</span>
+                    <span class="suit-label">Work From Home</span>
+                    <span class="suit-status">--</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Issues & Recommendations -->
+              <div class="speed-analysis" id="speed-analysis" style="display: none;">
+                <div class="analysis-issues" id="analysis-issues"></div>
+                <div class="analysis-recommendations" id="analysis-recommendations"></div>
+              </div>
+
+              <button class="action-btn primary speed-test-btn" id="speed-test-btn">
+                <span>🚀</span> Run Speed Test
+              </button>
+
+              <!-- Test History -->
+              <div class="speed-test-history" id="speed-test-history">
+                <div class="history-header">
+                  <h4>Test History</h4>
+                  <button class="clear-history-btn" id="clear-speed-history-btn" title="Clear history">Clear</button>
+                </div>
+                <div class="history-list" id="speed-history-list">
+                  <p class="history-empty">No previous tests. Run a speed test to start tracking.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Apps Tab -->
+          <div class="specs-tab-content" id="tab-apps">
+            <div class="apps-list" id="apps-list">
+              <div class="loading-state">Loading apps...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes Page -->
+        <div class="page" id="page-notes">
+          <div class="page-header-new">
+            <div class="page-header-icon">📝</div>
+            <div class="page-header-text">
+              <h2>Quick Notes</h2>
+              <p>Jot down anything you want to remember</p>
+            </div>
+            <div class="page-header-actions">
+              <span class="notes-count" id="notes-count">0 notes</span>
+            </div>
+          </div>
+
+          <div class="notes-container-new">
+            <!-- New Note Input -->
+            <div class="note-composer">
+              <textarea id="note-input" placeholder="What's on your mind? Type a quick note..."></textarea>
+              <div class="note-composer-footer">
+                <div class="note-templates">
+                  <button class="note-template-btn" data-template="📋 TODO: ">Todo</button>
+                  <button class="note-template-btn" data-template="💡 Idea: ">Idea</button>
+                  <button class="note-template-btn" data-template="🔗 Link: ">Link</button>
+                  <button class="note-template-btn" data-template="⚠️ Remember: ">Reminder</button>
+                </div>
+                <button class="save-note-btn-new" id="save-note-btn">
+                  <span>💾</span> Save
+                </button>
+              </div>
+            </div>
+
+            <!-- Notes List -->
+            <div class="notes-list-new" id="notes-list">
+              <div class="notes-empty-state">
+                <span class="empty-icon">📝</span>
+                <p>No notes yet. Start typing above!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Storage/Cleanup Page -->
+        <div class="page" id="page-storage">
+          <div class="page-header-new">
+            <div class="page-header-icon">🧹</div>
+            <div class="page-header-text">
+              <h2>Cleanup & Organize</h2>
+              <p>Free up space and keep things tidy</p>
+            </div>
+            <button class="quick-scan-btn" id="quick-scan-btn">
+              <span>⚡</span> Quick Scan
+            </button>
+          </div>
+
+          <!-- Storage Overview Cards -->
+          <div class="storage-overview" id="storage-cards">
+            <div class="loading-state">Checking storage...</div>
+          </div>
+
+          <!-- One-Click Cleanup -->
+          <div class="cleanup-section">
+            <div class="section-header">
+              <h3>⚡ One-Click Cleanup</h3>
+              <span class="section-hint">Safe to run anytime</span>
+            </div>
+            <div class="cleanup-cards">
+              <div class="cleanup-card" id="cleanup-btn">
+                <div class="cleanup-card-icon">🗑️</div>
+                <div class="cleanup-card-info">
+                  <span class="cleanup-card-title">Temp Files</span>
+                  <span class="cleanup-card-desc">Clear Windows temporary files</span>
+                </div>
+                <span class="cleanup-card-action">Clean</span>
+              </div>
+              <div class="cleanup-card" id="cleanup-browser-btn">
+                <div class="cleanup-card-icon">🌐</div>
+                <div class="cleanup-card-info">
+                  <span class="cleanup-card-title">Browser Cache</span>
+                  <span class="cleanup-card-desc">Free up browser storage</span>
+                </div>
+                <span class="cleanup-card-action">Clean</span>
+              </div>
+              <div class="cleanup-card" id="cleanup-recycle-btn">
+                <div class="cleanup-card-icon">♻️</div>
+                <div class="cleanup-card-info">
+                  <span class="cleanup-card-title">Recycle Bin</span>
+                  <span class="cleanup-card-desc">Permanently delete trashed files</span>
+                </div>
+                <span class="cleanup-card-action">Empty</span>
+              </div>
+              <div class="cleanup-card" id="cleanup-downloads-btn">
+                <div class="cleanup-card-icon">📥</div>
+                <div class="cleanup-card-info">
+                  <span class="cleanup-card-title">Old Downloads</span>
+                  <span class="cleanup-card-desc">Remove files older than 30 days</span>
+                </div>
+                <span class="cleanup-card-action">Clean</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Organize Section -->
+          <div class="cleanup-section">
+            <div class="section-header">
+              <h3>📁 Organize Folders</h3>
+              <span class="section-hint">Auto-sort by file type</span>
+            </div>
+            <div class="organize-grid">
+              <button class="organize-card organize-btn" data-folder="downloads">
+                <span class="organize-icon">📥</span>
+                <span>Downloads</span>
+              </button>
+              <button class="organize-card organize-btn" data-folder="desktop">
+                <span class="organize-icon">🖥️</span>
+                <span>Desktop</span>
+              </button>
+              <button class="organize-card organize-btn" data-folder="documents">
+                <span class="organize-icon">📄</span>
+                <span>Documents</span>
+              </button>
+              <button class="organize-card organize-btn" data-folder="pictures">
+                <span class="organize-icon">🖼️</span>
+                <span>Pictures</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Results -->
+          <div id="cleanup-result" class="cleanup-result" style="display: none;"></div>
+          <div id="desktop-result" class="cleanup-result" style="display: none;"></div>
+        </div>
+
+        <!-- Help Page -->
+        <div class="page" id="page-help">
+          <!-- Initial Options View -->
+          <div id="help-options-view">
+            <div class="page-header-new help-header">
+              <div class="page-header-icon">🆘</div>
+              <div class="page-header-text">
+                <h2>Get Support</h2>
+                <p>We're here to help when you need it</p>
+              </div>
+              <div class="support-status-badge" id="support-status-badge">
+                <span class="status-dot online"></span>
+                <span>Support Online</span>
+              </div>
+            </div>
+
+            <div class="help-container-new">
+              <!-- Support Options -->
+              <div class="help-options-grid" id="help-options-grid">
+                <!-- Chat with Support Card -->
+                <div class="help-card glow-hover" id="chat-support-btn">
+                  <div class="help-card-icon">💬</div>
+                  <div class="help-card-content">
+                    <h3>Chat with Support</h3>
+                    <p>Talk to our support team in real-time</p>
+                    <span class="help-card-subtitle">Average wait: 2-3 minutes</span>
+                  </div>
+                  <span class="help-card-arrow">→</span>
+                </div>
+
+                <!-- Urgent Help Card -->
+                <div class="help-card urgent glow-hover" id="urgent-help-btn">
+                  <div class="help-card-icon-urgent">
+                    <span class="pulse-ring"></span>
+                    🚨
+                  </div>
+                  <div class="help-card-content">
+                    <h3>I Need Help Now!</h3>
+                    <p>Senior technician • System diagnostic included</p>
+                    <span class="help-card-tag">Priority Queue</span>
+                  </div>
+                  <span class="help-card-arrow">→</span>
+                </div>
+              </div>
+
+              <!-- Support Info -->
+              <div class="help-info-section" id="help-info-section">
+                <div class="info-card">
+                  <span class="info-icon">⚡</span>
+                  <div class="info-text">
+                    <strong>Instant Response</strong>
+                    <span>Our team is standing by</span>
+                  </div>
+                </div>
+                <div class="info-card">
+                  <span class="info-icon">🔒</span>
+                  <div class="info-text">
+                    <strong>Secure & Private</strong>
+                    <span>Your conversation is encrypted</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Support Chat View -->
+          <div id="support-chat-view" style="display: none;">
+            <div class="support-chat-container">
+              <!-- Support Chat Header -->
+              <div class="support-chat-header">
+                <button class="support-back-btn" id="support-back-btn">
+                  <span>←</span>
+                </button>
+                <div class="support-agent-info">
+                  <div class="support-avatar" id="support-avatar">
+                    <span>👨‍💻</span>
+                    <span class="avatar-status online"></span>
+                  </div>
+                  <div class="support-agent-details">
+                    <h3 id="support-agent-name">Connecting...</h3>
+                    <span class="agent-status" id="support-agent-status">Finding available agent</span>
+                  </div>
+                </div>
+                <button class="end-chat-btn" id="end-support-chat-btn" title="End chat">
+                  <span>×</span>
+                </button>
+              </div>
+
+              <!-- Connecting/Queue Screen -->
+              <div class="support-connecting-screen" id="support-connecting-screen">
+                <div class="connecting-animation">
+                  <div class="connecting-rings">
+                    <div class="ring ring-1"></div>
+                    <div class="ring ring-2"></div>
+                    <div class="ring ring-3"></div>
+                    <div class="phone-icon" id="connecting-phone-icon">📞</div>
+                  </div>
+                </div>
+                <h3 id="connecting-title">Connecting to Support...</h3>
+                <p id="connecting-subtitle">Please wait while we find an available agent</p>
+                <div class="queue-info" id="queue-info" style="display: none;">
+                  <div class="queue-item">
+                    <span class="queue-label">Position in queue</span>
+                    <span class="queue-value" id="queue-position">2</span>
+                  </div>
+                  <div class="queue-item">
+                    <span class="queue-label">Estimated wait</span>
+                    <span class="queue-value" id="queue-wait">~1 min</span>
+                  </div>
+                </div>
+                <!-- Diagnostic scan for urgent mode -->
+                <div class="diagnostic-scan" id="diagnostic-scan" style="display: none;">
+                  <div class="scan-header">
+                    <span class="scan-icon">🔍</span>
+                    <span>Running System Diagnostic</span>
+                  </div>
+                  <div class="scan-items">
+                    <div class="scan-item" id="scan-cpu">
+                      <span class="scan-status pending">○</span>
+                      <span class="scan-label">CPU Usage</span>
+                      <span class="scan-value" id="scan-cpu-value">...</span>
+                    </div>
+                    <div class="scan-item" id="scan-memory">
+                      <span class="scan-status pending">○</span>
+                      <span class="scan-label">Memory</span>
+                      <span class="scan-value" id="scan-memory-value">...</span>
+                    </div>
+                    <div class="scan-item" id="scan-disk">
+                      <span class="scan-status pending">○</span>
+                      <span class="scan-label">Disk Space</span>
+                      <span class="scan-value" id="scan-disk-value">...</span>
+                    </div>
+                    <div class="scan-item" id="scan-processes">
+                      <span class="scan-status pending">○</span>
+                      <span class="scan-label">Running Processes</span>
+                      <span class="scan-value" id="scan-processes-value">...</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Support Chat Messages -->
+              <div class="support-chat-messages" id="support-chat-messages" style="display: none;">
+              </div>
+
+              <!-- Support Chat Input -->
+              <div class="support-chat-input-area" id="support-chat-input-area" style="display: none;">
+                <div class="support-input-wrapper">
+                  <input type="text" id="support-chat-input" placeholder="Type a message..." />
+                </div>
+                <button class="support-send-btn" id="support-send-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div class="page" id="page-settings">
+          <div class="page-header-new">
+            <div class="page-header-icon">⚙️</div>
+            <div class="page-header-text">
+              <h2>Settings</h2>
+              <p>Customize your experience</p>
+            </div>
+          </div>
+
+          <div class="settings-container">
+            <!-- AI Assistant Settings -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <span class="settings-icon">🤖</span>
+                <h3>AI Assistants</h3>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <span class="setting-label">Proactive insights</span>
+                  <span class="setting-desc">Show AI suggestions on the home page</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="setting-proactive" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <span class="setting-label">Remember facts about me</span>
+                  <span class="setting-desc">Allow Max to remember things you tell him</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="setting-remember" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <span class="setting-label">Clear Max's memory</span>
+                  <span class="setting-desc">Forget all remembered facts and chat history</span>
+                </div>
+                <button class="setting-btn" id="clear-ai-memory-btn">Clear Memory</button>
+              </div>
+            </div>
+
+            <!-- System Monitoring -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <span class="settings-icon">📊</span>
+                <h3>System Monitoring</h3>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <span class="setting-label">Auto-refresh home page</span>
+                  <span class="setting-desc">Automatically update system stats</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="setting-monitoring" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <span class="setting-label">Refresh interval</span>
+                  <span class="setting-desc">How often to update system stats</span>
+                </div>
+                <select class="setting-select" id="setting-refresh">
+                  <option value="10" selected>10 seconds</option>
+                  <option value="30">30 seconds</option>
+                  <option value="60">1 minute</option>
+                  <option value="300">5 minutes</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Cleanup Settings -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <span class="settings-icon">🧹</span>
+                <h3>Cleanup</h3>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <span class="setting-label">Confirm before cleanup</span>
+                  <span class="setting-desc">Ask for confirmation before deleting files</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="setting-confirm-cleanup" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <span class="setting-label">Old downloads threshold</span>
+                  <span class="setting-desc">Consider downloads older than this as "old"</span>
+                </div>
+                <select class="setting-select" id="setting-downloads-age">
+                  <option value="7">7 days</option>
+                  <option value="14">14 days</option>
+                  <option value="30" selected>30 days</option>
+                  <option value="60">60 days</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Data & Privacy -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <span class="settings-icon">🔒</span>
+                <h3>Data & Privacy</h3>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <span class="setting-label">Store notes locally</span>
+                  <span class="setting-desc">Notes are saved in your browser, never uploaded</span>
+                </div>
+                <span class="setting-badge">✓ Enabled</span>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <span class="setting-label">Export all data</span>
+                  <span class="setting-desc">Download your notes and preferences</span>
+                </div>
+                <button class="setting-btn" id="export-data-btn">Export</button>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <span class="setting-label">Reset everything</span>
+                  <span class="setting-desc">Delete all data and restore default settings</span>
+                </div>
+                <button class="setting-btn danger" id="clear-data-btn">Reset App</button>
+              </div>
+            </div>
+
+            <!-- About -->
+            <div class="settings-section">
+              <div class="settings-section-header">
+                <span class="settings-icon">ℹ️</span>
+                <h3>About</h3>
+              </div>
+
+              <div class="about-info">
+                <div class="about-logo">🖥️</div>
+                <div class="about-details">
+                  <h4>PC Utility Pro</h4>
+                  <p class="version">Version 2.4.0</p>
+                  <p class="copyright">© 2025 All rights reserved</p>
+                </div>
+              </div>
+
+              <div class="about-features">
+                <span class="feature-tag">AI Assistant</span>
+                <span class="feature-tag">System Monitor</span>
+                <span class="feature-tag">Cleanup Tools</span>
+                <span class="feature-tag">IT Support</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- First Run / Consent Modal -->
+  <div class="modal-overlay" id="consent-modal" style="display: none;">
+    <div class="modal-box consent-modal">
+      <div class="consent-header">
+        <div class="consent-icon">🖥️</div>
+        <h2>Welcome to PC Utility Pro</h2>
+        <p>Your friendly PC assistant</p>
+      </div>
+
+      <div class="consent-content">
+        <div class="consent-section">
+          <h3>What we collect</h3>
+          <ul class="consent-list">
+            <li><span class="consent-check">✓</span> Which features you use (to improve the app)</li>
+            <li><span class="consent-check">✓</span> Error reports (to fix bugs)</li>
+            <li><span class="consent-check">✓</span> Basic system stats (CPU/RAM usage)</li>
+          </ul>
+        </div>
+
+        <div class="consent-section">
+          <h3>What we never collect</h3>
+          <ul class="consent-list negative">
+            <li><span class="consent-x">✗</span> Your personal files or documents</li>
+            <li><span class="consent-x">✗</span> Passwords or credentials</li>
+            <li><span class="consent-x">✗</span> Browsing history</li>
+            <li><span class="consent-x">✗</span> Keystrokes or screen content</li>
+          </ul>
+        </div>
+
+        <p class="consent-note">
+          All data stays on your device unless you explicitly request remote support.
+        </p>
+      </div>
+
+      <div class="consent-actions">
+        <label class="consent-checkbox">
+          <input type="checkbox" id="analytics-consent" checked>
+          <span class="checkmark"></span>
+          Enable usage analytics (helps us improve)
+        </label>
+
+        <button class="btn btn-primary btn-large" id="consent-accept">
+          Get Started
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

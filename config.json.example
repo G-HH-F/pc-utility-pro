@@ -1,0 +1,11 @@
+{
+  "claudeApiKey": "your-claude-api-key-here",
+  "autoCheckUpdates": true,
+
+  "pushoverUser": "",
+  "pushoverToken": "",
+  "supportContactName": "IT Support",
+
+  "useRelayServer": false,
+  "relayServerUrl": "wss://your-relay-server.com/ws"
+}

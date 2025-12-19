@@ -1,0 +1,83 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+out/
+*.exe
+*.dmg
+*.deb
+*.rpm
+*.AppImage
+
+# Config files with secrets
+config.json
+!config.json.example
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# User data (local development)
+app-data.json
+user-analytics.json
+micro-behaviors.json
+ai-sessions.json
+
+# Test files
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+
+# OS files
+.DS_Store
+Desktop.ini
+ehthumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Package manager
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build artifacts
+*.tsbuildinfo
+
+# Electron
+*.asar
+
+# Certificates (NEVER commit these)
+*.p12
+*.pfx
+*.pem
+*.key
+*.crt
+*.cer
+
+# Crash dumps
+*.dmp
+crash-reports/
+
+# nul file (Windows artifact)
+nul
